@@ -1,5 +1,6 @@
 # Stufe 1: Produktions-Jar bauen (Vaadin production mode, Frontend gebündelt).
-# Vaadin lädt Node.js während des Builds selbst nach, dafür braucht der Build Internetzugang.
+# Solange das Projekt nur Java enthält, nutzt Vaadin sein vorgefertigtes Bundle und braucht kein Node.js.
+# Erst bei eigenen Frontend-Dateien lädt Vaadin Node.js während des Builds selbst nach (Internetzugang nötig).
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /build
 

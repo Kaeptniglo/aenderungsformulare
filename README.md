@@ -13,7 +13,10 @@ als Web-Formulare abbildet: Feldvalidierung, gegenseitige Beeinflussung der Feld
 | Vaadin Flow  | 25.2.x   |
 | Build        | Maven Wrapper (`mvnw`, keine Maven-Installation nötig) |
 
-Node.js wird von Vaadin beim ersten Start automatisch nach `~/.vaadin` geladen.
+Node.js wird nicht benötigt, solange das Projekt nur Java-Dateien enthält: Vaadin verwendet dann sein
+vorgefertigtes Frontend-Bundle ("Express Build", Log-Meldung "bundle build is not needed"). Erst bei eigenen
+Web-Components, npm-Paketen oder JavaScript-Modulen baut Vaadin ein eigenes Bundle und lädt Node.js dafür
+automatisch nach `~/.vaadin`.
 
 Hinweis zur Versionswahl: Die kostenlose Wartung von Vaadin 24 endete im Juni 2026; neuere 24.x-Releases
 verlangen im Entwicklungsmodus eine kommerzielle Lizenz. Vaadin 25 ist die aktuelle freie Hauptversion
@@ -44,8 +47,8 @@ Im Ordner `.run/` liegen fertige Run-Konfigurationen, die IntelliJ automatisch a
 | `Maven package (production)`         | Produktions-Jar mit optimiertem Frontend-Bundle bauen |
 
 Spring Boot DevTools ist eingebunden, Änderungen an Java-Klassen werden nach dem Neubauen (Ctrl+F9)
-automatisch übernommen. Beim ersten Start lädt Vaadin Node.js nach `~/.vaadin` und baut das Frontend,
-das dauert einige Minuten; danach startet die App in wenigen Sekunden.
+automatisch übernommen. Der erste Start dauert wegen des Maven-Downloads der Abhängigkeiten einige
+Minuten; danach startet die App in wenigen Sekunden.
 
 ## Aufbau
 
@@ -141,7 +144,7 @@ Das Repo enthält alles für einen Container-Deploy:
 
 | Datei | Zweck |
 |-------|-------|
-| `Dockerfile` | Zweistufig: baut das Produktions-Jar (inkl. Node-Download durch Vaadin), Laufzeit-Image nur mit JRE 21 |
+| `Dockerfile` | Zweistufig: baut das Produktions-Jar, Laufzeit-Image nur mit JRE 21 |
 | `render.yaml` | Blueprint für Render.com: Docker-Web-Service in Frankfurt, Health-Check auf `/health`, Zugangsdaten als Umgebungsvariablen |
 | `sicherheit/SicherheitsKonfiguration` | HTTP Basic Auth für Oberfläche und REST-API, per `app.auth.enabled` schaltbar |
 
