@@ -1,0 +1,24 @@
+/* Anwendungs-Stylesheet (wird in AenderungsformulareApplication per @StyleSheet geladen). */
+html {
+    --lumo-primary-color: hsl(211, 63%, 40%);
+    --lumo-primary-color-50pct: hsla(211, 63%, 40%, 0.5);
+    --lumo-primary-color-10pct: hsla(211, 63%, 40%, 0.1);
+}
+
+.formular-karte {
+    border: 1px solid var(--lumo-contrast-10pct);
+    border-radius: var(--lumo-border-radius-l);
+    padding: var(--lumo-space-m);
+    cursor: pointer;
+    transition: box-shadow 120ms ease-in-out;
+}
+
+.formular-karte:hover {
+    box-shadow: var(--lumo-box-shadow-s);
+}
+
+.formular-abschnitt {
+    margin-top: var(--lumo-space-l);
+    padding-bottom: var(--lumo-space-xs);
+    border-bottom: 1px solid var(--lumo-contrast-10pct);
+}

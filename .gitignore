@@ -1,0 +1,28 @@
+# Maven
+/target/
+.mvn/wrapper/maven-wrapper.jar
+
+# Vaadin (generiert)
+/node_modules/
+/src/main/frontend/generated/
+/src/main/frontend/index.html
+/src/main/bundles/
+/target/vaadin-build-frontend/
+/package.json
+/package-lock.json
+/tsconfig.json
+/types.d.ts
+/vite.config.ts
+/vite.generated.ts
+/.vaadin/
+
+# IDE
+/.idea/
+*.iml
+/.vscode/
+/.settings/
+/.project
+/.classpath
+
+# Sonstiges
+*.log

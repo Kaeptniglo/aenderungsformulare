@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "aenderungsformulare",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "mvnw.cmd", "-B", "-ntp", "spring-boot:run"],
+      "port": 8080
+    }
+  ]
+}
