@@ -135,6 +135,47 @@ dokumente.api.pfad=/api/dokumente
 Der `RestDokumentClient` sendet `POST {base-url}{pfad}` mit `DokumentAnfrage` als JSON und erwartet
 `DokumentAntwort`. Das Protokoll ist eine Annahme und im Client an das Zielsystem anzupassen.
 
+## Hosting im Internet (Demo von außerhalb erreichbar)
+
+Das Repo enthält alles für einen Container-Deploy:
+
+| Datei | Zweck |
+|-------|-------|
+| `Dockerfile` | Zweistufig: baut das Produktions-Jar (inkl. Node-Download durch Vaadin), Laufzeit-Image nur mit JRE 21 |
+| `render.yaml` | Blueprint für Render.com: Docker-Web-Service in Frankfurt, Health-Check auf `/health`, Zugangsdaten als Umgebungsvariablen |
+| `sicherheit/SicherheitsKonfiguration` | HTTP Basic Auth für Oberfläche und REST-API, per `app.auth.enabled` schaltbar |
+
+### Zugangsschutz
+
+Lokal ist der Schutz aus. Beim Hosting per Umgebungsvariablen einschalten:
+
+```
+APP_AUTH_ENABLED=true
+APP_AUTH_BENUTZER=demo
+APP_AUTH_PASSWORT=<geheim>
+```
+
+Der Browser fragt dann einmal Benutzername/Passwort ab, die REST-API erwartet `-u benutzer:passwort`.
+`/health` bleibt immer offen (für den Health-Check des Hosting-Dienstes). Basic Auth nur über HTTPS
+verwenden, was bei Render/Fly automatisch der Fall ist.
+
+### Deploy auf Render (empfohlen, wenige Klicks)
+
+1. Konto auf <https://render.com> anlegen und GitHub verbinden.
+2. Dashboard → **New** → **Blueprint** → dieses Repository wählen. Render liest `render.yaml`,
+   baut das Dockerfile und erzeugt das Passwort (`APP_AUTH_PASSWORT`) automatisch.
+3. Nach dem ersten Build (ca. 5–10 Minuten) ist die App unter `https://aenderungsformulare-<id>.onrender.com`
+   erreichbar. Das Passwort steht im Dashboard unter **Environment**.
+4. Jeder Push auf `main` löst automatisch einen neuen Deploy aus.
+
+Im kostenlosen Plan schläft der Dienst nach 15 Minuten ohne Zugriff ein, der nächste Aufruf dauert dann
+ca. 30–60 Sekunden. Der Plan `starter` (ca. 7 USD/Monat) läuft dauerhaft; dazu in `render.yaml` `plan: starter` setzen.
+
+Alternativen mit derselben Docker-Datei: Fly.io (`fly launch`), Railway, oder ein beliebiger Server mit
+`docker build -t aenderungsformulare . && docker run -p 8080:8080 -e APP_AUTH_ENABLED=true -e APP_AUTH_PASSWORT=geheim aenderungsformulare`.
+
+Hinweis: Einreichungen liegen nur im Arbeitsspeicher und sind nach jedem Neustart/Deploy weg.
+
 ## Neues Formular hinzufügen
 
 1. Modellklasse in `model/` anlegen (Felder + Validation-Annotationen, feldübergreifende Regeln als `@AssertTrue`).
@@ -146,7 +187,8 @@ Der `RestDokumentClient` sendet `POST {base-url}{pfad}` mit `DokumentAnfrage` al
 
 ## Noch offen (bewusst nicht Teil des Prototyps)
 
-* Anmeldung/Benutzer (z. B. Spring Security + Vaadin-Login)
+* Richtige Anmeldung/Benutzerverwaltung (aktuell nur HTTP Basic Auth mit einem Benutzer; Vaadins
+  View-Zugriffskontrolle per `@PermitAll`/`@RolesAllowed` ist in `SicherheitsKonfiguration` abgeschaltet)
 * Persistenz der Einreichungen (Datenbank statt In-Memory)
 * Echtes Protokoll des Dokumenterstellungs-Systems, Download/Anzeige der erzeugten PDFs
 * Die drei Beispielformulare durch die realen PDF-Formulare ersetzen

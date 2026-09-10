@@ -1,0 +1,19 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# Einrichtung: Render-Dashboard -> New -> Blueprint -> dieses GitHub-Repo wählen.
+# Render baut das Dockerfile, setzt PORT und liefert eine HTTPS-Adresse.
+services:
+  - type: web
+    name: aenderungsformulare
+    runtime: docker
+    plan: free            # "free" schläft nach 15 Min. Inaktivität ein; "starter" läuft dauerhaft
+    region: frankfurt
+    healthCheckPath: /health
+    envVars:
+      - key: APP_AUTH_ENABLED
+        value: "true"
+      - key: APP_AUTH_BENUTZER
+        value: demo
+      - key: APP_AUTH_PASSWORT
+        generateValue: true   # Render erzeugt ein zufälliges Passwort; im Dashboard unter Environment einsehbar
+      - key: JAVA_TOOL_OPTIONS
+        value: "-Xss512k"

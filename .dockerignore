@@ -1,0 +1,12 @@
+target/
+dist/
+node_modules/
+.vaadin/
+.git/
+.idea/
+.run/
+.claude/
+*.iml
+*.log
+src/main/frontend/generated/
+src/main/frontend/index.html
